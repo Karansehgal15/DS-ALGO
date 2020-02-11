@@ -1,0 +1,66 @@
+Question:
+Given a string containing duplicates, print all its distinct permutations such that there are no duplicate permutations and all permutations are printed in a lexicographic order.
+NOTE: DO NOT USE MAP OR SET.
+
+Input Format
+The first and only line of the test case contains the input string.
+
+Constraints
+Length of the string <= 8
+
+Output Format
+Print all the distinct permutations in a lexicographic order such that each permutation is in a new line. Note that there should not be any duplicate permutations.
+
+Sample Input
+ABA
+Sample Output
+AAB
+ABA
+BAA
+
+CODE:
+#include<bits/stdc++.h>
+using namespace std;
+
+int main() {
+	// your code goes here
+	string s;
+	cin>>s;
+	sort(s.begin(),s.end());
+	do{
+		cout<<s<<endl;
+	}while(next_permutation(s.begin(),s.end()));
+	
+	return 0;
+}
+
+///// another code
+
+
+#include<bits/stdc++.h>
+using namespace std;
+
+void permute(string &s,int st)
+{
+	if(st==s.length())
+	{	cout<<s<<endl; return ;	}
+
+	for(int i=st;i<s.length();i++)
+	{
+		bool flag=true;
+		for(int j=i+1;j<s.length();j++)
+		{
+			if(s[j]==s[i])
+			{	flag=false;	break;	}
+		}
+		if(flag)
+		{	swap(s[st],s[i]);	permute(s,st+1);	swap(s[st],s[i]);	}
+	}
+}
+
+int main()
+{
+	string s;	cin>>s;
+	sort(s.begin(),s.end());
+	permute(s,0);
+}
