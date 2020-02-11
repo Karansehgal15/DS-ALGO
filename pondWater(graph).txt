@@ -1,0 +1,106 @@
+You are given a matrix with N rows and M columns. Each cell is either dry or has water. 
+We say that two cells are neighbours if they share one of their four sides.
+A pond is a maximal subset of cells containing water such that any cell is accessible from any other cell by moving only along neighbours.
+You should add water to exactly one cell in order to maximise the size of the pond.
+
+Input Format
+The first line contains two integers N and M.
+Each of the next N lines contains M integers: 0 for a dry cell and 1 for a cell containing water.
+
+Constraints
+1 = N,M = 1000 There is at least one dry cell and one cell filled with water in the matrix.
+
+Output Format
+Print a single integer representing the largest possible size of the pond.
+
+Sample Input
+3 3
+0 1 1
+0 0 1
+0 1 0
+Sample Output
+5
+Explanation
+Watering the cell at coordinates [2,2] unites the 2 ponds with sizes 1 and 3, resulting a pond of size 5,including the newly watered cell.
+
+
+code:
+def isvalid(x,y,m,n):
+	if(x<0 or y<0 or x>=m or y>=n):
+		return 0;
+	return 1;
+def covered(x,y,m,n,k,board,vis):
+	if(x<0 or y<0 or x>=m or y>=n):
+		return 0;
+	
+	if(board[x][y]==0):
+		return 0;
+	
+	if(vis[x][y]==1):
+		return 0;
+
+	vis[x][y]=1
+	board[x][y]=k
+	op=0
+	op+=covered(x+1,y,m,n,k,board,vis)
+	op+=covered(x,y+1,m,n,k,board,vis)
+	op+=covered(x-1,y,m,n,k,board,vis)
+	op+=covered(x,y-1,m,n,k,board,vis)
+	return op+1 
+	
+dim=list(map(int,input().split()))
+m=dim[0]; n=dim[1];
+board=[]
+vis=[]
+reach=0
+for i in range(m):
+	row=list(map(int,input().split()))
+	vr=[0]*len(row)
+	vis.append(vr)
+	board.append(row)
+
+ans=0
+grp=1
+grpSize=dict()
+for i in range(m):
+	for j in range(n):
+		if(vis[i][j]==0 and board[i][j]==1):
+			op=covered(i,j,m,n,grp,board,vis)	
+			grpSize[grp]=op
+			grp+=1;
+		
+flag=True
+ans=0
+for i in range(m):
+	for j in range(n):
+		if(board[i][j]==0):
+			flag=False
+			op=1
+			considered=[0]
+			if(isvalid(i+1,j,m,n)):
+				grp=board[i+1][j]
+				if grp not in considered:
+					op+=grpSize[grp]
+					considered.append(grp)
+			if(isvalid(i-1,j,m,n)):
+				grp=board[i-1][j]
+				if grp not in considered:
+					op+=grpSize[grp]
+					considered.append(grp)
+			if(isvalid(i,j+1,m,n)):
+				grp=board[i][j+1]
+				if grp not in considered:
+					op+=grpSize[grp]
+					considered.append(grp)
+			if(isvalid(i,j-1,m,n)):
+				grp=board[i][j-1]
+				if grp not in considered:
+					op+=grpSize[grp]
+					considered.append(grp)
+			ans=max(ans,op)
+
+
+if(flag):
+	print(m*n)
+else:	
+	print(ans)
